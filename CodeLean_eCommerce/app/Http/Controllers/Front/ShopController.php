@@ -20,12 +20,21 @@ class ShopController extends Controller
             $avgRating = $sumRating / $countRating;
         }
 
-        return view('front.shop.show', compact('product', 'avgRating'));
+        $relatedProducts = Product::where('product_category_id', $product->product_category_id)
+            ->where('tag', $product->tag)
+            ->limit(4)
+            ->get();
+
+        return view('front.shop.show', compact('product', 'avgRating', 'relatedProducts'));
     }
 
     public function postComment(Request $request){
         ProductComment::create($request->all());
 
         return redirect()->back();
+    }
+
+    public function index(){
+        return view('front.shop.index');
     }
 }
