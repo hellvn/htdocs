@@ -118,6 +118,14 @@ class ShopController extends Controller
         $priceMax = str_replace('$', '', $priceMax);
         $products = ($priceMin != null && $priceMax != null) ? $products->whereBetween('price', [$priceMin, $priceMax]):$products;
 
+//        Color
+        $color = $request->color;
+        $products = $color != null
+            ?$products->whereHas('productDetails', function ($query) use ($color){
+                return $query->where('color', $color)->where('qty', '>', 0);
+            })
+            :$products;
+
         return $products;
     }
 }
