@@ -59,18 +59,21 @@
                             <div class="filter-range-wrap">
                                 <div class="range-slider">
                                     <div class="price-input">
-                                        <input type="text" id="minamount">
-                                        <input type="text" id="maxamount">
+                                        <input type="text" id="minamount" name="price_min">
+                                        <input type="text" id="maxamount" name="price_max">
                                     </div>
                                 </div>
                                 <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
-                                     data-min="33" data-max="98">
+                                     data-min="10" data-max="999"
+                                     data-min-value="{{ str_replace('$', '', request('price_min')) }}"
+                                     data-max-value="{{ str_replace('$', '', request('price_max')) }}">
                                     <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
                                     <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
                                     <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
                                 </div>
                             </div>
-                            <a href="#" class="filter-btn">Filter</a>
+
+                            <button type="submit" class="filter-btn">Filter</button>
                         </div>
                         <div class="filter-widget">
                             <h4 class="fw-title">Color</h4>

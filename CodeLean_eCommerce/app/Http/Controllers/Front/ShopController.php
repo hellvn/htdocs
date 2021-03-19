@@ -49,6 +49,8 @@ class ShopController extends Controller
 
         $products = Product::where('name', 'like', '%' . $search. '%');
 
+        $products = $this->filter($products, $request);
+
         $products = $this->sortAndPagination($products, $sortBy, $perPage);
 
         return view('front.shop.index', compact('categories','brands','products'));
@@ -64,6 +66,8 @@ class ShopController extends Controller
         $sortBy = $request->sort_by ?? 'latest';
 
         $products = ProductCategory::where('name', $categoryName)->first()->products->toQuery();
+
+        $products = $this->filter($products, $request);
 
         $products = $this->sortAndPagination($products, $sortBy, $perPage);
 
@@ -97,6 +101,22 @@ class ShopController extends Controller
         $products = $products->paginate($perPage);
 
         $products->appends(['sort_by' => $sortBy, 'show' => $perPage]);
+
+        return $products;
+    }
+
+    public function filter($products, Request $request){
+//        Brand
+        $brands = $request->brand ??[];
+        $brand_ids = array_keys($brands);
+        $products = $brand_ids != null ? $products->whereIn('brand_id', $brand_ids):$products;
+
+//        Price
+        $priceMin = $request->price_min;
+        $priceMax = $request->price_max;
+        $priceMin = str_replace('$', '', $priceMin);
+        $priceMax = str_replace('$', '', $priceMax);
+        $products = ($priceMin != null && $priceMax != null) ? $products->whereBetween('price', [$priceMin, $priceMax]):$products;
 
         return $products;
     }
