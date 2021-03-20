@@ -13,6 +13,10 @@ class ShopController extends Controller
 {
     //
     public  function show($id){
+        //        Get Categories, Brands:
+        $categories = ProductCategory::all();
+        $brands = Brand::all();
+
         $product = Product::findOrfail($id);
 
         $avgRating = 0;
@@ -27,7 +31,7 @@ class ShopController extends Controller
             ->limit(4)
             ->get();
 
-        return view('front.shop.show', compact('product', 'avgRating', 'relatedProducts'));
+        return view('front.shop.show', compact('product','categories', 'brands', 'avgRating', 'relatedProducts'));
     }
 
     public function postComment(Request $request){
@@ -123,6 +127,14 @@ class ShopController extends Controller
         $products = $color != null
             ?$products->whereHas('productDetails', function ($query) use ($color){
                 return $query->where('color', $color)->where('qty', '>', 0);
+            })
+            :$products;
+
+//        Size
+        $size = $request->size;
+        $products = $size != null
+            ?$products->whereHas('productDetails', function ($query) use ($size){
+                return $query->where('size', $size)->where('qty', '>', 0);
             })
             :$products;
 
